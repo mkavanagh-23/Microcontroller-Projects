@@ -2,5 +2,6 @@
 .clang_complete
 .gcc-flags.json
 .ccls
+.cache
 compile_commands.json
 include/credentials.h
