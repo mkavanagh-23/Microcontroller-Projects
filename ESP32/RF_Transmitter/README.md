@@ -23,7 +23,7 @@ Flash the sketch contained in the "Receiver" directory and wire the controller a
  - Connect the GND pin on the receiver to a GND pin on the module
  - Connect the VCC pin on the receiver to the 3.3V output on the module
 
-![Receiver Circuit Diagram](https://github.com/mkavanagh-23/ESP-Projects/blob/8344896eed632ca1db0fbc4e6ec93560e863148d/ESP32/DECK_LIGHTS/images/receivecircuit.png)
+![Receiver Circuit Diagram](https://github.com/mkavanagh-23/Microcontroller-Projects/blob/a455dba9a8d709ddb8933aa93731ce14c9206a90/ESP32/RF_Transmitter/docs/receivecircuit.png)
 
 ## Transmitting RF Codes
 
@@ -44,10 +44,10 @@ Flash the sketch contained in the "Transmitter" directory and wire the controlle
  - (Optional) Solder an antenna to the ANT pad for better range
  - GPIO2 powers the built-in LED indicator when set as 'OUTPUT'
 
-![3V3 Circuit Diagram](https://github.com/mkavanagh-23/ESP-Projects/blob/bc51acde9648dc5ce235bbe0daac2b86a4e39f2a/ESP32/DECK_LIGHTS/images/3v3circuit.png)
+![3V3 Circuit Diagram](https://github.com/mkavanagh-23/Microcontroller-Projects/blob/a455dba9a8d709ddb8933aa93731ce14c9206a90/ESP32/RF_Transmitter/docs/3v3circuit.png)
 
 *\*note: if powered via USB you can connect POS to the VIN 5V port to get a stronger signal*:
 
-![5V Circuit Diagram](https://github.com/mkavanagh-23/ESP-Projects/blob/bc51acde9648dc5ce235bbe0daac2b86a4e39f2a/ESP32/DECK_LIGHTS/images/5vcircuit.png)
+![5V Circuit Diagram](https://github.com/mkavanagh-23/Microcontroller-Projects/blob/a455dba9a8d709ddb8933aa93731ce14c9206a90/ESP32/RF_Transmitter/docs/5vcircuit.png)
 
 **DO NOT supply power input to both the VIN5V and USB Port at the same time or you will cause a short**.
