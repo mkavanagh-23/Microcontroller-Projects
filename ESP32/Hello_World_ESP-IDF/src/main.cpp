@@ -1,9 +1,6 @@
 #include "main.h"
-#include "esp_err.h"
-#include "freertos/idf_additions.h"
-
 #include "esp_log.h"
-#include "freertos/projdefs.h"
+#include "freertos/FreeRTOS.h"
 #define LOG_TAG "MAIN"
 
 static Main my_main;
