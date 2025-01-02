@@ -1,0 +1,5 @@
+.cache
+.ccls
+.pio/build
+compile_commands.json
+include/credentials.h
