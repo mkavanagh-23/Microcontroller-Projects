@@ -15,6 +15,7 @@ echo 'CompileFlags:
     ]
   Remove:
     [
+      # -fno-shrink-wrap,           #uncomment if using ESP-IDF
       -fno-tree-switch-conversion,
       -mtext-section-literals,
       -mlongcalls,
