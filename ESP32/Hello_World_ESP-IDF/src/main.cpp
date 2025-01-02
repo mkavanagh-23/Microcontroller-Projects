@@ -8,6 +8,8 @@
 extern "C" void app_main(void) {
   while(true) {
     ESP_LOGI(LOG_TAG, "Hello World!");
-    vTaskDelay(1000);   // Delay by 100 ticks
+    vTaskDelay(500);   // Delay by 100 ticks
+    ESP_LOGE("ERROR", "This is an error message");
+    vTaskDelay(500);
   }
 }
