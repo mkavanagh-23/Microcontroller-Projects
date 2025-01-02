@@ -43,4 +43,6 @@ echo '.cache
 compile_commands.json
 include/credentials.h' > .gitignore
 
+# echo "monitor_speed = 115200" > platformio.ini    #uncomment if using ESP-IDF
+
 exit 0
