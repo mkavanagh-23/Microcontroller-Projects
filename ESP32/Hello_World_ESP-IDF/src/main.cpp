@@ -1,15 +1,26 @@
 #include "main.h"
+#include "esp_err.h"
 #include "freertos/idf_additions.h"
 
-#define LOG_LEVEL_LOCAL ESP_LOG_VERBOSE
 #include "esp_log.h"
+#include "freertos/projdefs.h"
 #define LOG_TAG "MAIN"
 
+static Main my_main;
+
 extern "C" void app_main(void) {
+  ESP_ERROR_CHECK(my_main.setup());
   while(true) {
-    ESP_LOGI(LOG_TAG, "Hello World!");
-    vTaskDelay(500);   // Delay by 100 ticks
-    ESP_LOGE("ERROR", "This is an error message");
-    vTaskDelay(500);
+    my_main.run();
   }
+}
+
+esp_err_t Main::setup(void){
+  esp_err_t status{ESP_OK};
+  return status;
+}
+
+void Main::run(void){
+  ESP_LOGI(LOG_TAG, "Hello, world!");
+  vTaskDelay(pdMS_TO_TICKS(1000));  // Delay by 1000 ms
 }
