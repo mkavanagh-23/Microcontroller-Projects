@@ -36,7 +36,7 @@
 #define ADC_ATTEN ADC_ATTEN_DB_11       // No attenuation, 0dB, works for the 0-3.3V range
 
 // Delay variables
-constexpr int STATIC_DELAY{2000};
+constexpr int STATIC_DELAY{1000};
 int dynamicDelay{200};
 int delayTime{dynamicDelay};
 static SemaphoreHandle_t delayMutex = NULL; // Create a mutex to prevent a race condition
@@ -83,20 +83,32 @@ esp_err_t Main::setup(void){
 }
 
 void Main::run(void){
+  TaskHandle_t taskHandle = xTaskGetCurrentTaskHandle();
+  UBaseType_t stackHighWaterMark = uxTaskGetStackHighWaterMark(taskHandle);
+  int counter{0};
   ESP_LOGI(LOG_TAG, "Starting colored LED asynchronously...");
   xTaskCreate(colorTask, "Blink Colored", 2048, NULL, 3, NULL);
   ESP_LOGI(LOG_TAG, "Begin listening for potentiometer input");
   xTaskCreate(setDelay, "Set LED Delay Rate", 2048, NULL, 2, NULL);
-  ESP_LOGI(LOG_TAG, "Starting built-in LED asynchronously...");
+  ESP_LOGI(LOG_TAG, "Starting built-in LED");
   while(true) {
     gpio_set_level(LED_BUILTIN, 1);
     vTaskDelay(pdMS_TO_TICKS(STATIC_DELAY));  // Delay by 1000 ms
     gpio_set_level(LED_BUILTIN, 0);
     vTaskDelay(pdMS_TO_TICKS(STATIC_DELAY));  // Delay by 1000 ms
+    counter++;
+    if(counter > 5) {
+      stackHighWaterMark = uxTaskGetStackHighWaterMark(taskHandle);
+      ESP_LOGI("MAIN", "Lowest stack space available: %u bytes", stackHighWaterMark);
+      counter = 0;
+    }
   }
 }
 
 void colorTask(void *pvParameter) {
+  TaskHandle_t taskHandle = xTaskGetCurrentTaskHandle();
+  UBaseType_t stackHighWaterMark = uxTaskGetStackHighWaterMark(taskHandle);  // Free bytes = 220
+  int counter{0};
   while(true){
     for(gpio_num_t LED : LEDs){
       // Turn the LED ON
@@ -107,11 +119,20 @@ void colorTask(void *pvParameter) {
       gpio_set_level(LED, 0);
       updateDelay(delayTime);
       vTaskDelay(pdMS_TO_TICKS(delayTime));
+      counter++;
+      if(counter > 20) {
+        stackHighWaterMark = uxTaskGetStackHighWaterMark(taskHandle);
+        ESP_LOGI("COLOR", "Lowest stack space available: %u bytes", stackHighWaterMark);
+        counter = 0;
+      }
     }
   }
 }
 
 void setDelay(void *pvParameter) {
+  TaskHandle_t taskHandle = xTaskGetCurrentTaskHandle();
+  UBaseType_t stackHighWaterMark = uxTaskGetStackHighWaterMark(taskHandle); // Free bytes = 206
+  int counter{0};
   while(true){
     int newValue = potMap(adc1_get_raw(POT_ADC));
 
@@ -123,6 +144,12 @@ void setDelay(void *pvParameter) {
       xSemaphoreGive(delayMutex);
     }
     vTaskDelay(pdMS_TO_TICKS(300));
+    counter++;
+    if(counter > 20) {
+      stackHighWaterMark = uxTaskGetStackHighWaterMark(taskHandle);
+      ESP_LOGI("DELAY", "Lowest stack space available: %u bytes", stackHighWaterMark);
+      counter = 0;
+    }
   }
 }
 
