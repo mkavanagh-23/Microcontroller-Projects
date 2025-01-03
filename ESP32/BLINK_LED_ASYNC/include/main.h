@@ -10,7 +10,6 @@ class Main final {
 };
 
 void colorTask(void *pvParameter);
-void builtinTask(void *pvParameter);
 void setDelay(void *pvParameter);
 void updateDelay(int& delay);
 int potMap(int value);

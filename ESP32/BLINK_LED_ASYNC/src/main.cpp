@@ -83,33 +83,31 @@ esp_err_t Main::setup(void){
 }
 
 void Main::run(void){
-  ESP_LOGI(LOG_TAG, "Starting built-in LED asynchronously...");
-  xTaskCreate(builtinTask, "Blink Built-In", 2048, NULL, 2, NULL);
   ESP_LOGI(LOG_TAG, "Starting colored LED asynchronously...");
   xTaskCreate(colorTask, "Blink Colored", 2048, NULL, 3, NULL);
   ESP_LOGI(LOG_TAG, "Begin listening for potentiometer input");
   xTaskCreate(setDelay, "Set LED Delay Rate", 2048, NULL, 2, NULL);
+  ESP_LOGI(LOG_TAG, "Starting built-in LED asynchronously...");
+  while(true) {
+    gpio_set_level(LED_BUILTIN, 1);
+    vTaskDelay(pdMS_TO_TICKS(STATIC_DELAY));  // Delay by 1000 ms
+    gpio_set_level(LED_BUILTIN, 0);
+    vTaskDelay(pdMS_TO_TICKS(STATIC_DELAY));  // Delay by 1000 ms
+  }
 }
 
 void colorTask(void *pvParameter) {
   while(true){
     for(gpio_num_t LED : LEDs){
+      // Turn the LED ON
       gpio_set_level(LED, 1);
       updateDelay(delayTime);
       vTaskDelay(pdMS_TO_TICKS(delayTime));
+      // Turn the LED OFF
       gpio_set_level(LED, 0);
       updateDelay(delayTime);
       vTaskDelay(pdMS_TO_TICKS(delayTime));
     }
-  }
-}
-
-void builtinTask(void *pvParameter) {
-  while(true){
-    gpio_set_level(LED_BUILTIN, 1);
-    vTaskDelay(pdMS_TO_TICKS(STATIC_DELAY));  // Delay by 1000 ms
-    gpio_set_level(LED_BUILTIN, 0);
-    vTaskDelay(pdMS_TO_TICKS(STATIC_DELAY));  // Delay by 1000 ms
   }
 }
 
@@ -118,7 +116,7 @@ void setDelay(void *pvParameter) {
     int newValue = potMap(adc1_get_raw(POT_ADC));
 
     if(xSemaphoreTake(delayMutex, portMAX_DELAY) == pdTRUE) {
-      if(abs(newValue - dynamicDelay) > 2) {
+      if(abs(newValue - dynamicDelay) > 10) {
         dynamicDelay = newValue;
         ESP_LOGI("DELAY", "Colored LED delay set to: %d ms", dynamicDelay);
       }
@@ -140,9 +138,9 @@ int potMap(int value) {
   int input_min = 0;
   int input_max = 4095;
 
-  // Output range (200 to 5000)
-  int output_min = 50;
-  int output_max = 1000;
+  // Output range
+  int output_min = 10;
+  int output_max = 2000;
 
   // Apply the linear mapping formula
   int output_value = ((value - input_min) * (output_max - output_min)) / (input_max - input_min) + output_min;
