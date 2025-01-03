@@ -4,21 +4,17 @@
 // A potentiometer is used in another thread to set the rate of blinking for the LED sequence
 // Special care must be taken to prevent access to the delay variable by multiple threads at the same time
 
-#include <array>
-#include <stdio.h>
 #include"../include/main.h"
 
 #include "freertos/FreeRTOS.h"
-#include "freertos/idf_additions.h"
-#include "freertos/projdefs.h"
 #include "freertos/task.h"
 
 #include "esp_log.h"
 #include "driver/gpio.h"
 #include "driver/adc.h"
-#include "hal/gpio_types.h"
-#include "portmacro.h"
-#include "soc/gpio_num.h"
+
+#include <array>
+#include <stdio.h>
 
 #define LOG_TAG "MAIN"
 
@@ -99,7 +95,7 @@ void Main::run(void){
     counter++;
     if(counter > 5) {
       stackHighWaterMark = uxTaskGetStackHighWaterMark(taskHandle);
-      ESP_LOGI("MAIN", "Lowest stack space available: %u bytes", stackHighWaterMark);
+      ESP_LOGI("LOG_TAG", "Lowest stack space available: %u bytes", stackHighWaterMark);
       counter = 0;
     }
   }
